@@ -1,59 +1,29 @@
 from manim import *
 
 
-class SoftmaxScene(Scene):
+class SineWaveGraph(Scene):
     def construct(self):
-        # Title
-        title = Text("Softmax Function").scale(1.5).to_edge(UP)
-        self.play(Write(title))
+        axes = Axes(
+            x_range=[-3 * np.pi, 3 * np.pi, np.pi / 2],
+            y_range=[-1.5, 1.5, 0.5],
+            axis_config={"color": BLUE},
+            x_axis_config={"include_numbers": False},
+            y_axis_config={"include_numbers": False},
+        )
 
-        # Classification problem
-        classification_problem = Text("Classification Problem").scale(1.2).to_edge(LEFT)
-        self.play(Write(classification_problem))
+        # Create the axes
+        self.add(axes)
 
-        # Neural network diagram
-        neural_network = self.get_neural_network_diagram().to_edge(RIGHT)
-        self.play(FadeIn(neural_network))
+        # Animate the sine wave
+        sine_graph = self.get_sine_wave_graph(axes)
+        self.play(Write(sine_graph), run_time=3)
 
-        # Explanation of raw scores
-        raw_scores = Text("Raw Scores (Logits)").next_to(neural_network, DOWN).scale(0.8)
-        self.play(Write(raw_scores))
+        self.wait(3)
 
-        # Softmax function
-        softmax_text = Text("Softmax Function").next_to(classification_problem, DOWN)
-        self.play(Write(softmax_text))
-
-        # Softmax formula
-        softmax_formula = MathTex("p_i = \\frac{e^{z_i}}{\\sum_{j} e^{z_j}}").next_to(softmax_text, DOWN).scale(0.8)
-        self.play(Write(softmax_formula))
-
-        # Explanation of softmax
-        softmax_explanation = Text("Converts logits into probabilities").next_to(softmax_formula, DOWN).scale(0.8)
-        self.play(Write(softmax_explanation))
-
-        # Explanation of need for softmax
-        need_softmax = Text("Raw scores may not be interpretable as probabilities").next_to(softmax_explanation, DOWN).scale(0.8)
-        self.play(Write(need_softmax))
-
-        # Conclusion
-        conclusion = Text("Softmax is crucial for interpreting classification model outputs").to_edge(DOWN)
-        self.play(Write(conclusion))
-
-        self.wait()
-
-    def get_neural_network_diagram(self):
-        input_layer = Rectangle(width=2, height=1.5, color=BLUE)
-        hidden_layer = Rectangle(width=2, height=1.5, color=BLUE).shift(DOWN * 1.5)
-        output_layer = Rectangle(width=2, height=1.5, color=BLUE).shift(DOWN * 3)
-
-        arrow1 = Arrow(input_layer.get_bottom(), hidden_layer.get_top(), color=WHITE)
-        arrow2 = Arrow(hidden_layer.get_bottom(), output_layer.get_top(), color=WHITE)
-
-        neural_network = VGroup(input_layer, hidden_layer, output_layer, arrow1, arrow2)
-
-        return neural_network
+    def get_sine_wave_graph(self, axes):
+        return FunctionGraph(lambda x: np.sin(x), x_range=[-3 * np.pi, 3 * np.pi], color=WHITE)
 
 
 # Example usage
-softmax_scene = SoftmaxScene()
-softmax_scene.render()
+sine_wave_scene = SineWaveGraph()
+sine_wave_scene.render()
